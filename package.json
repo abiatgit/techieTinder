@@ -1,0 +1,22 @@
+{
+  "name": "techietinder",
+  "version": "1.0.0",
+  "description": "An app for techies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/app.js"
+  },
+  "keywords": [
+    "app",
+    "tinder",
+    "techie"
+  ],
+  "author": "Abi George",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "express": "^4.21.0",
+    "nodemon": "^3.1.4"
+  }
+}
