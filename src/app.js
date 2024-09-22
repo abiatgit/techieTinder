@@ -1,40 +1,34 @@
-const express= require("express")
-const chalk = require("chalk")
-const app= express();
-const port= 3000
+const express = require("express");
+const chalk = require("chalk");
+const app = express();
+const port = 3000;
+const{adminAuth,userAuth}=require("../middileware/auth")
 
 
-app.use("/hello?",(req,res)=>{
-   res.send("welcome to my webpage")
+
+
+app.get("/admin/all",adminAuth,(req,res)=>{
+  res.send("here is your users data")
+})
+app.post("/admin/all",adminAuth,(req,res)=>{
+  res.send("here is your users data updated")
+})
+app.delete("/admin/all",adminAuth,(req,res)=>{
+  res.send("here is your users data deleted")
+})
+app.get("/user/all",userAuth,(req,res)=>{
+  res.send("here is your users data")
+})
+app.get("/user/login",(req,res)=>{
+  res.send("login here")
+})
+app.post("/user/all",userAuth,(req,res)=>{
+  res.send("here is your users data updated")
+})
+app.delete("/user/all",userAuth,(req,res)=>{
+  res.send("here is your users data deleted")
 })
 
-
-app.use("/hello*o",(req,res)=>{
-   res.send("welcome to my webpage")
-})
-app.use("/hello+o",(req,res)=>{
-   res.send("welcome to my webpage")
-})
-
-app.use(/\/users\/.*/, (req, res) => {
-   res.send("welcome to my webpage");
- });
-
-app.use("/hello()",(req,res)=>{
-   res.send("welcome to my webpage")
-})
-
-app.get("/home/:Userid/:name?",(req,res)=>{
-console.log(req.params.Userid)
-   res.send("hello ")
-})
-
-
-app.get('/search/', (req, res) => {
-   const searchTerm = req.query.num
-   res.send(`here is your book ${searchTerm}`)
-   });
-
-app.listen(port,()=>{
-    console.log(chalk.blue.bgRed.bold(`Server successfully started at ${port}`))
-}); 
+app.listen(port,() => {
+  console.log(chalk.blue.bgRed.bold(`Server successfully started at ${port}`));
+});
