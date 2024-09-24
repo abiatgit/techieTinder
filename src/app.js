@@ -2,33 +2,36 @@ const express = require("express");
 const chalk = require("chalk");
 const app = express();
 const port = 3000;
-const{adminAuth,userAuth}=require("../middileware/auth")
+let connectDB = require("../config/database");
+const User = require("../models/UserModel");
+const newdata= 
+{firstName: "George Kutty",
+lastName: "George",
+password: "123",
+email: "george@gmail.com",
+age: 32,
+Gender: "male"}
 
+connectDB()
+  .then(() => {
+    console.log(chalk.blue.bgWhite.bold`Db connected`);
+    app.listen(port, () => {
+      console.log(
+        chalk.green.bgWhite.bold(`Server successfully started at ${port}`)
+      );
+    });
+  })
+  .catch((err) => console.log(`DB not connected`));
 
+app.post("/signup",async(req, res) => {
 
+try{
+  const user=new User(newdata)
+  const Savedate=await user.save()
+  res.send("data stored")
+}
+catch(err){
+  res.send("data not stored ")
+}
 
-app.get("/admin/all",adminAuth,(req,res)=>{
-  res.send("here is your users data")
-})
-app.post("/admin/all",adminAuth,(req,res)=>{
-  res.send("here is your users data updated")
-})
-app.delete("/admin/all",adminAuth,(req,res)=>{
-  res.send("here is your users data deleted")
-})
-app.get("/user/all",userAuth,(req,res)=>{
-  res.send("here is your users data")
-})
-app.get("/user/login",(req,res)=>{
-  res.send("login here")
-})
-app.post("/user/all",userAuth,(req,res)=>{
-  res.send("here is your users data updated")
-})
-app.delete("/user/all",userAuth,(req,res)=>{
-  res.send("here is your users data deleted")
-})
-
-app.listen(port,() => {
-  console.log(chalk.blue.bgRed.bold(`Server successfully started at ${port}`));
 });
