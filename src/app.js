@@ -4,14 +4,8 @@ const app = express();
 const port = 3000;
 let connectDB = require("../config/database");
 const User = require("../models/UserModel");
-const newdata= 
-{firstName: "George Kutty",
-lastName: "George",
-password: "123",
-email: "george@gmail.com",
-age: 32,
-Gender: "male"}
 
+app.use(express.json());
 connectDB()
   .then(() => {
     console.log(chalk.blue.bgWhite.bold`Db connected`);
@@ -23,15 +17,42 @@ connectDB()
   })
   .catch((err) => console.log(`DB not connected`));
 
-app.post("/signup",async(req, res) => {
+app.post("/signup", async (req, res) => {
+  const newUser = req.body;
+  try {
+    const user = new User(newUser);
+    const Savedata = await user.save();
+    res.send("data stored");
+  } catch (err) {
+    res.send("data not stored ");
+  }
+});
+app.post("/signup/many", async (req, res) => {
+  const newUserArray = req.body;
+  try {
+    const Savedata = await User.insertMany(newUserArray);
+    res.send("data stored");
+  } catch (err) {
+    res.send("data not stored ");
+  }
+});
 
-try{
-  const user=new User(newdata)
-  const Savedate=await user.save()
-  res.send("data stored")
-}
-catch(err){
-  res.send("data not stored ")
-}
-
+app.get("/user", async (req, res) => {
+  try {
+    const userdaat = await User.find({});
+    res.send(userdaat);
+  } catch (err) {
+    res.send("data cant find ");
+  }
+});
+app.patch("/user/edit", async (req, res) => {
+  try {
+    let firstName = req.body.firstName;
+    let editlastname=req.body.lastName
+    console.log(editlastname)
+    const useredit = await User.updateOne({firstName:firstName},{lastName:editlastname});
+    res.send("updated successfully");
+  } catch (err) {
+    res.send("data cant find ");
+  }
 });
