@@ -16,3 +16,7 @@ git branch -M main
 git push -u origin main
 
 DB pass=CetIkUPqPhFBKLAa
+
+
+git config --global user.name "Abi George"
+git config --global user.email "contactabisgeorge@gmail.com"
