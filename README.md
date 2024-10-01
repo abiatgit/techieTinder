@@ -15,8 +15,9 @@ git remote add origin https://github.com/abiatgit/techieTinder.git
 git branch -M main
 git push -u origin main
 
-DB pass=CetIkUPqPhFBKLAa
+DB pass=np
 
 
 git config --global user.name "Abi George"
 git config --global user.email "contactabisgeorge@gmail.com"
+kerala government doing 
