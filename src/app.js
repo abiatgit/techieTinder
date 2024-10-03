@@ -68,7 +68,7 @@ app.patch("/user/edit/:userId?", async (req, res) => {
     console.log(userId);
     console.log(updates);
 
-    const updatesAllowed = ["firstName", "lastName", "password","skills"];
+    const updatesAllowed = ["firstName", "lastName", "password","skills","email"];
     const updatesObj = updates;
     const isupdateAllowed = Object.keys(updatesObj).every((key) =>
       updatesAllowed.includes(key)
@@ -76,9 +76,9 @@ app.patch("/user/edit/:userId?", async (req, res) => {
     if (!isupdateAllowed) {
       throw new Error("ristricted edit feild");
     }
-    if(updates.skills.length>10){
-      throw new Error ("skill should be lessthan 10")
-    }
+    // if(updates.skills.length>10){
+    //   throw new Error ("skill should be lessthan 10")
+    // }
 
     console.log(isupdateAllowed);
     const useredit = await User.updateOne(
