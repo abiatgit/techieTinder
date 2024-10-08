@@ -21,3 +21,19 @@ DB pass=np
 git config --global user.name "Abi George"
 git config --global user.email "contactabisgeorge@gmail.com"
 kerala government doing 
+
+{
+  "firstName": "Dsfeff gandhi",
+  "lastName": "George",
+  "password": "Blessing_A3",
+  "email": "suabigeorge@gmail.com"
+ 
+
+
+ {
+
+  "password": "Blessin_a123",
+  "email": "abigorge@gmail.com"
+
+}
+db pass==Ywru4fQ07kubUlzs

@@ -18,8 +18,8 @@ const userSchema = new Schema({
     type: String,
     required: true,
     minLength:[6,"minimum six letters needed"],
-    maxLength:[12,"Maximum 12 letters allowed"],
-    select: false
+    maxLength:[200,"Maximum 12 letters allowed"],
+    
    
   },
   email:{
@@ -36,7 +36,7 @@ const userSchema = new Schema({
     }
   },
   phone:{
-    required:true,
+    
     type:String,
     validate:
     {validator:function (value){

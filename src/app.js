@@ -4,9 +4,16 @@ const app = express();
 const port = 3000;
 let connectDB = require("../config/database");
 const User = require("../models/UserModel");
+const validation = require("../utils/validation");
+const bcrypt = require("bcrypt");
+var cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+
+app.use(cookieParser());
 
 app.use(express.json());
-// app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({ extended: true }));
+
 connectDB()
   .then(() => {
     console.log(chalk.blue.bgWhite.bold`Db connected`);
@@ -30,14 +37,24 @@ app.get("/user", async (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-  const newUser = req.body;
-  console.log(newUser);
+  const body = req.body;
   try {
-    const user = new User(newUser);
+    validation(body);
+    const { firstName, lastName, password, email } = req.body;
+    let passwordbycrpt = await bcrypt.hash(password, 10);
+    console.log(passwordbycrpt);
+    const user = new User({
+      firstName,
+      lastName,
+      password: passwordbycrpt,
+      email,
+    });
     const Savedata = await user.save();
-    res.send("data stored");
+    const token = jwt.sign({ id: Savedata._id.toString() }, "Blessing_abi123");
+    console.log(token);
+    res.send("data saved");
   } catch (err) {
-    res.send("data not stored ");
+    res.send(err.message);
   }
 });
 app.post("/signup/many", async (req, res) => {
@@ -68,7 +85,13 @@ app.patch("/user/edit/:userId?", async (req, res) => {
     console.log(userId);
     console.log(updates);
 
-    const updatesAllowed = ["firstName", "lastName", "password","skills","email"];
+    const updatesAllowed = [
+      "firstName",
+      "lastName",
+      "password",
+      "skills",
+      "email",
+    ];
     const updatesObj = updates;
     const isupdateAllowed = Object.keys(updatesObj).every((key) =>
       updatesAllowed.includes(key)
@@ -110,5 +133,56 @@ app.delete("/user", async (req, res) => {
     console.log("error occurred about ");
 
     return res.send(" cant find user User not deleted");
+  }
+});
+app.get("/home", async(req, res) => {
+      try {
+        let cookie=req.cookies.token
+        let veryfied = await jwt.verify(cookie,"Blessing_abi123")
+        console.log(veryfied.id)
+        res.send("welcome buddy"+veryfied.id)
+      }
+      catch(err){
+        res.send(err)
+      }
+});
+app.get("/profile",async(req,res)=>{
+  try {
+    let cookie=req.cookies.token
+    let veryfied = await jwt.verify(cookie,"Blessing_abi123")
+    let user= await User.findOne({_id:veryfied.id})
+    console.log(user)
+    res.send(user)
+  }
+  catch(err){
+    res.send(err)
+  }
+})
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    const { _id } = user;
+    const idstring = _id.toString();
+
+    if (!user) {
+      throw new Error("User not fount");
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (isMatch) {
+      const token = await jwt.sign({ id: idstring }, "Blessing_abi123");
+
+      if (!token) {
+        throw new Error();
+      }
+
+      res.cookie("token", token);
+
+      res.send("succesfuly logged");
+    } else {
+      res.send("woring credentioan you can not login");
+    }
+  } catch (err) {
+    res.send(err);
   }
 });
