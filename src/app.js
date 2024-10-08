@@ -8,6 +8,7 @@ const validation = require("../utils/validation");
 const bcrypt = require("bcrypt");
 var cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
+const isUserAuth = require("../middilewares/userAuth");
 
 app.use(cookieParser());
 
@@ -135,29 +136,35 @@ app.delete("/user", async (req, res) => {
     return res.send(" cant find user User not deleted");
   }
 });
-app.get("/home", async(req, res) => {
-      try {
-        let cookie=req.cookies.token
-        let veryfied = await jwt.verify(cookie,"Blessing_abi123")
-        console.log(veryfied.id)
-        res.send("welcome buddy"+veryfied.id)
-      }
-      catch(err){
-        res.send(err)
-      }
-});
-app.get("/profile",async(req,res)=>{
+app.get("/home", async (req, res) => {
   try {
-    let cookie=req.cookies.token
-    let veryfied = await jwt.verify(cookie,"Blessing_abi123")
-    let user= await User.findOne({_id:veryfied.id})
-    console.log(user)
-    res.send(user)
+    let cookie = req.cookies.token;
+    let veryfied = await jwt.verify(cookie, "Blessing_abi123");
+    console.log(veryfied.id);
+    res.send("welcome buddy" + veryfied.id);
+  } catch (err) {
+    res.send(err);
   }
-  catch(err){
-    res.send(err)
+});
+app.get("/profile", async (req, res) => {
+  try {
+    let cookie = req.cookies.token;
+    let veryfied = await jwt.verify(cookie, "Blessing_abi123");
+    let user = await User.findOne({ _id: veryfied.id });
+    console.log(user);
+    res.send(user);
+  } catch (err) {
+    res.send(err);
   }
-})
+});
+
+app.get("/getpage", isUserAuth, (req, res) => {
+  res.send(`welcome to getpage${req.user.firstName}`);
+});
+app.post("/connecton/request", isUserAuth, (req, res) => {
+  res.send(`connection sent from ${req.user.firstName}`);
+});
+
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -170,13 +177,21 @@ app.post("/login", async (req, res) => {
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (isMatch) {
-      const token = await jwt.sign({ id: idstring }, "Blessing_abi123");
+      const token = await jwt.sign({ id: idstring }, "Blessing_abi123", {
+        expiresIn: "1h",
+      });
 
       if (!token) {
         throw new Error();
       }
 
-      res.cookie("token", token);
+    // Set cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "strict",
+      maxAge: 3600000, // 1 hour in milliseconds
+      expires: new Date(Date.now() + 3600000) // 1 hour from now
+    });
 
       res.send("succesfuly logged");
     } else {
