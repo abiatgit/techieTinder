@@ -23,3 +23,6 @@
 =>Create Auth middileware
 =>add userAuth middileware inprofiele API and a new send connecftion Request API
 =>Set the expiry of JWT token and cookies to 7days!
+
+=>createa Userschema method to getJWT()
+

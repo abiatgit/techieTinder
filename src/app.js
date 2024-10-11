@@ -167,37 +167,54 @@ app.post("/connecton/request", isUserAuth, (req, res) => {
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
+
+  // Input validation
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email and password are required" });
+  }
+
   try {
     const user = await User.findOne({ email });
-    const { _id } = user;
-    const idstring = _id.toString();
 
     if (!user) {
-      throw new Error("User not fount");
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-    const isMatch = await bcrypt.compare(password, user.password);
+
+    const isMatch = await user.isPasswordVerified(password);
+
     if (isMatch) {
-      const token = await jwt.sign({ id: idstring }, "Blessing_abi123", {
-        expiresIn: "1h",
-      });
+      const token = await user.jwtToken();
 
       if (!token) {
-        throw new Error();
+        return res
+          .status(500)
+          .json({ success: false, message: "Failed to generate token" });
       }
 
-    // Set cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "strict",
-      maxAge: 3600000, // 1 hour in milliseconds
-      expires: new Date(Date.now() + 3600000) // 1 hour from now
-    });
+      // Set cookie
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // Use secure in production
+        sameSite: "strict",
+        maxAge: 3600000, // 1 hour in milliseconds
+      });
 
-      res.send("succesfuly logged");
+      return res
+        .status(200)
+        .json({ success: true, message: "Successfully logged in" });
     } else {
-      res.send("woring credentioan you can not login");
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
     }
   } catch (err) {
-    res.send(err);
+    console.error("Login error:", err);
+    return res
+      .status(500)
+      .json({ success: false, message: "An error occurred during login" });
   }
 });
