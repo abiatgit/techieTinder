@@ -25,4 +25,20 @@ const validation = (data) => {
 
 };
 
-module.exports = validation;
+const isAllowedEditData = (req) => {
+  const allowedUpdates = ['firstName', 'lastName', 'about'];
+  
+  // Check if req is an object
+  if (typeof req !== 'object' || req === null) {
+    console.error('Invalid input: req must be an object');
+    return false;
+  }
+
+  const isValidOperation = Object.keys(req).every(field => allowedUpdates.includes(field));
+  
+ 
+
+  return isValidOperation;
+}
+
+module.exports = {validation,isAllowedEditData}
