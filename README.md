@@ -30,7 +30,7 @@ kerala government doing
 {
   "firstName": "Sonia ",
   "lastName": "Gandi",
-  "password": "Blessing_A3",
+  "password": "Blessing_Ancy3",
   "email": "sonia@gmail.com"
 }
 {

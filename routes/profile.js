@@ -5,8 +5,7 @@ const jwt = require("jsonwebtoken");
 const isUserAuth = require("../middilewares/userAuth");
 const { isAllowedEditData } = require("../utils/validation");
 
-const bcrypt =require("bcrypt")
-
+const bcrypt = require("bcrypt");
 
 profileRouter.get("/profile", async (req, res) => {
   try {
@@ -47,18 +46,16 @@ profileRouter.patch("/edit/profile", isUserAuth, async (req, res) => {
   }
 });
 
-profileRouter.patch("/forgot/password",isUserAuth,async (req, res) => {
-
- try { 
-
-  const loggedUser = req.user;
-  const passwordHash=await bcrypt.hash(req.body.password,10)
-  loggedUser.password = passwordHash
-  await loggedUser.save()
-  console.log(loggedUser.password);
-  res.send(`update password sucesfuluy`);}
-  catch(err){
-  res.send("cant update error happend")
+profileRouter.patch("/forgot/password", isUserAuth, async (req, res) => {
+  try {
+    const loggedUser = req.user;
+    const passwordHash = await bcrypt.hash(req.body.password, 10);
+    loggedUser.password = passwordHash;
+    await loggedUser.save();
+    console.log(loggedUser.password);
+    res.send(`update password sucesfuluy`);
+  } catch (err) {
+    res.send("cant update error happend");
   }
 });
 module.exports = profileRouter;

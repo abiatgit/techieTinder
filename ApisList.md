@@ -14,7 +14,10 @@ PATCH /tinder.com/profle/password
 GET /tinder.com/profle/savedprofile or liked
 GET /tinder.com/profle/blockedprofiles
 
-
+### connection Rqest Router
+POST /request/send/:status/:userID
+POST /request/send/:accept/:userID
+POST /request/send/:ac/:userID
 ## Matching
 GET /tinder.com/matches
 POST /tinder.com/match/{userId}
