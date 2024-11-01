@@ -4,41 +4,61 @@ const User = require("../models/UserModel");
 const jwt = require("jsonwebtoken");
 const isUserAuth = require("../middilewares/userAuth");
 const { isAllowedEditData } = require("../utils/validation");
+const logger = require("logger");
 
 const bcrypt = require("bcrypt");
+const { json } = require("body-parser");
 
-profileRouter.get("/profile", async (req, res) => {
+profileRouter.get("/profile", isUserAuth, async (req, res) => {
   try {
-    let cookie = req.cookies.token;
-
-    let veryfied = await jwt.verify(cookie, "Blessing_abi123");
-    console.log(veryfied);
-    let user = await User.findOne({ _id: veryfied.id });
-    console.log(user);
-    res.send(user);
+    let loggedUser = await req.user
+    res.status(200).json({ message: "Success", data: loggedUser });
   } catch (err) {
-    res.send(err);
+    console.error("Profile retrieved successfully", err);
+    res
+      .status(500)
+      .json({ message: "An error occuared while fetching your profile" });
   }
 });
 
 profileRouter.patch("/edit/profile", isUserAuth, async (req, res) => {
   try {
-    const editDAte = req.body;
-    const isAllowedEditDataCame = isAllowedEditData(editDAte);
-
-    if (!isAllowedEditDataCame) {
+    const editData = req.body;
+    const loggedUser = req.user;
+    if (!editData || Object.keys(editData).length === 0) {
       return res
         .status(404)
-        .json({ success: false, message: "this data can not edit" });
+        .json({ success: false, message: "No data provided for update" });
     }
-    const loggedUser = req.user;
 
-    Object.keys(req.body).forEach((key) => (loggedUser[key] = req.body[key]));
+    const allowedFields = isAllowedEditData(editData);
+
+    if ( allowedFields.length === 0) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No valid fields to update" });
+    }
+
+    const updatedFields = [];
+    allowedFields.forEach((field) => {
+      if (editData[field] !== undefined) {
+        loggedUser[field] = editData[field];
+        updatedFields.push(field);
+      }
+    });
+
+    if (updatedFields.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No fields were updated"
+      });
+    }
+
     await loggedUser.save();
 
-    res.send(loggedUser.firstName);
+    res.status(200).json({success:true, message: "Profile successfully updated" ,updatedFields:updatedFields});
   } catch (error) {
-    console.error("Profile edit error:", error);
+    logger.error("Profile edit error:", error);
     res.status(500).json({
       success: false,
       message: "An error occurred while updating the profile",
@@ -49,13 +69,39 @@ profileRouter.patch("/edit/profile", isUserAuth, async (req, res) => {
 profileRouter.patch("/forgot/password", isUserAuth, async (req, res) => {
   try {
     const loggedUser = req.user;
-    const passwordHash = await bcrypt.hash(req.body.password, 10);
+    const{password,confirmPassword}=req.body
+    if(!password || password.length <8){
+      return res.status(400).json({message:"password must be at least 8 characters long"})
+    }
+
+    if( password !== confirmPassword){
+      return res.status(400).json({message:" Password not match"})
+    }
+
+    const passwordHash = await bcrypt.hash(password,12);
     loggedUser.password = passwordHash;
     await loggedUser.save();
-    console.log(loggedUser.password);
-    res.send(`update password sucesfuluy`);
+    
+    res.status(200).json({message:`update password succesfully`})
   } catch (err) {
-    res.send("cant update error happend");
+    console.error(`Error updating password`,err)
+    res.status(500).json.json({ message: `An error occuared while editing your password`});
   }
 });
+
+profileRouter.delete("/delete",isUserAuth,async(req,res)=>{
+ try{
+  const loggedUser=req.user
+  const deletedUser = await User.findOneAndDelete({_id:loggedUser._id})
+  if(!deletedUser){
+    return res.status(400).json({message:"Can not delete the user"})
+  }
+
+  return res.status(200).json({message:`User successfuly deleted`})
+ }
+ catch(err){
+    res.status(500).json({message:"An error occured while deleting the user"})
+ }
+
+})
 module.exports = profileRouter;

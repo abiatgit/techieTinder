@@ -34,3 +34,30 @@
     "about": "i'am a new user",
  
 }
+{
+ 
+    "firstName": "Sushama George",
+    "lastName": "vattakakuzhi",
+    "password": "Blessing_123",
+    "email": "sushama@gmail.com",
+    "about": "i'am a new user",
+ 
+},
+{
+ 
+    "firstName": "Rajamma",
+    "lastName": "vattakakuzhi",
+    "password": "Blessing_123",
+    "email": "rajamma@gmail.com",
+    "about": "i'am a new user",
+ 
+},
+{
+ 
+    "firstName": "Vijayamma",
+    "lastName": "vattakakuzhi",
+    "password": "Blessing_123",
+    "email": "vijayamma@gmail.com",
+    "about": "i'am a new user",
+ 
+}

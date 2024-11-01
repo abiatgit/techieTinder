@@ -31,14 +31,14 @@ const isAllowedEditData = (req) => {
   // Check if req is an object
   if (typeof req !== 'object' || req === null) {
     console.error('Invalid input: req must be an object');
-    return false;
+    return [];
   }
 
-  const isValidOperation = Object.keys(req).every(field => allowedUpdates.includes(field));
+  const validFields = Object.keys(req).filter(field => allowedUpdates.includes(field));
   
  
 
-  return isValidOperation;
+  return  validFields
 }
 
 module.exports = {validation,isAllowedEditData}

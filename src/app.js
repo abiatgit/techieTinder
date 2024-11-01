@@ -4,14 +4,14 @@ const app = express();
 const port = 3000;
 let connectDB = require("../config/database");
 var cookieParser = require("cookie-parser");
-// const User = require("../models/UserModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 
 const authRouter=require("../routes/auth")
-const requesstRoute=require("../routes/request")
+const requesstRouter=require("../routes/request")
 const profileRouter=require("../routes/profile")
+const userRouter =require("../routes/user")
 
 
 app.use(cookieParser());
@@ -20,8 +20,9 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use("/",authRouter)
-app.use("/",requesstRoute)
+app.use("/",requesstRouter)
 app.use("/",profileRouter)
+app.use("/",userRouter)
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

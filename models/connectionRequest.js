@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose  =require("mongoose")
 
 const connectionRequestSchema = new mongoose.Schema(
   {
@@ -16,7 +16,7 @@ const connectionRequestSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: {
-        values: ["interest", "ignore", "pending","accept","reject"],
+        values: ["interest", "ignore","accept","reject"],
         message: "{VALUE} is not a valid status",
       },
       default: "pending",
@@ -25,6 +25,7 @@ const connectionRequestSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+connectionRequestSchema.index({fromUser:1,toUser:1});
 
 connectionRequestSchema.pre("save", function(next){
   if(this.fromUser.equals(this.toUser)){
@@ -34,10 +35,11 @@ connectionRequestSchema.pre("save", function(next){
   next()
 })
 
-const connectionRequest = mongoose.model(
+const ConnectionRequest = mongoose.model(
   "connectionRequest",
   connectionRequestSchema
 );
 
 
-module.exports = connectionRequest;
+
+module.exports  = ConnectionRequest
