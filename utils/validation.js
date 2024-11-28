@@ -26,7 +26,7 @@ const validation = (data) => {
 };
 
 const isAllowedEditData = (req) => {
-  const allowedUpdates = ['firstName', 'lastName', 'about'];
+  const allowedUpdates = ['firstName', 'lastName', 'about',"photoUrl","gender","age"];
   
   // Check if req is an object
   if (typeof req !== 'object' || req === null) {

@@ -9,11 +9,16 @@ const logger = require("logger");
 const bcrypt = require("bcrypt");
 const { json } = require("body-parser");
 
+
+
+
 profileRouter.get("/profile", isUserAuth, async (req, res) => {
   try {
+  
     let loggedUser = await req.user
     res.status(200).json({ message: "Success", data: loggedUser });
   } catch (err) {
+    
     console.error("Profile retrieved successfully", err);
     res
       .status(500)
@@ -22,6 +27,7 @@ profileRouter.get("/profile", isUserAuth, async (req, res) => {
 });
 
 profileRouter.patch("/edit/profile", isUserAuth, async (req, res) => {
+console.log(req.body)
   try {
     const editData = req.body;
     const loggedUser = req.user;
@@ -56,9 +62,10 @@ profileRouter.patch("/edit/profile", isUserAuth, async (req, res) => {
 
     await loggedUser.save();
 
-    res.status(200).json({success:true, message: "Profile successfully updated" ,updatedFields:updatedFields});
+    res.status(200).json({success:true, message: "Profile successfully updated" ,data:loggedUser});
+    console.log(`logged usser ${loggedUser}`)
   } catch (error) {
-    logger.error("Profile edit error:", error);
+   console.log(error)
     res.status(500).json({
       success: false,
       message: "An error occurred while updating the profile",

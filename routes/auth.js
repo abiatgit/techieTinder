@@ -27,6 +27,12 @@ authRouter.post("/signup", async (req, res) => {
       lastName,
       password: passwordbycrpt,
       email,
+      age,
+      gender,
+      photoUrl,
+      about,
+      phone
+
     });
 
     const Savedata = await user.save();
@@ -43,8 +49,6 @@ authRouter.post("/signup", async (req, res) => {
 
 authRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
-  // Input validation
   if (!email || !password) {
     return res
       .status(400)
@@ -64,6 +68,7 @@ authRouter.post("/login", async (req, res) => {
 
     if (isMatch) {
       const token = await user.jwtToken();
+      console.log(token);
 
       if (!token) {
         return res
@@ -71,18 +76,14 @@ authRouter.post("/login", async (req, res) => {
           .json({ success: false, message: "Failed to generate token" });
       }
 
-      // Set cookie
       res.cookie("token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // Use secure in production
-        sameSite: "strict",
         maxAge: 3600000, // 1 hour in milliseconds
       });
-
+      console.log(`Token sent ${token}`);
       return res.status(200).json({
         success: true,
         message: "Successfully logged in",
-        userId: user._id,
+        data: user
       });
     } else {
       return res
@@ -99,6 +100,7 @@ authRouter.post("/login", async (req, res) => {
 
 authRouter.post("/logout", (req, res) => {
   try {
+    // res.clearCookie("token",{httpOnly:true})
     res.cookie("token", "", { expairy: Date.now(0) });
     res.status(200).json({
       success: true,

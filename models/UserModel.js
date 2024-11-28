@@ -52,12 +52,15 @@ const userSchema = new Schema(
     skills: {
       type: [Schema.Types.Mixed],
     },
-    age: {
+    photoUrl:{
+      type:String
+    },
+    age:{
       type: Number,
       min: [18, "you must be 18 years or more"],
       max: [100, "you must be less than 100 years old"],
     },
-    Gender: {
+    gender: {
       type: String,
       enum: ["male", "female", "others"],
     },

@@ -4,8 +4,15 @@ const app = express();
 const port = 3000;
 let connectDB = require("../config/database");
 var cookieParser = require("cookie-parser");
+const cors=require("cors")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
+app.use(cors({
+  origin: "http://localhost:5173",  // Frontend origin
+  credentials: true,               // Allow cookies
+  
+}));
 
 
 const authRouter=require("../routes/auth")
@@ -23,6 +30,7 @@ app.use("/",authRouter)
 app.use("/",requesstRouter)
 app.use("/",profileRouter)
 app.use("/",userRouter)
+
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
