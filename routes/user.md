@@ -54,7 +54,7 @@
 },
 {
  
-    "firstName": "Vijayamma",
+    "firstName": "Vijayamma",aka="kavya"
     "lastName": "vattakakuzhi",
     "password": "Blessing_123",
     "email": "vijayamma@gmail.com",

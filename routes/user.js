@@ -4,11 +4,10 @@ const isUserAuth = require("../middilewares/userAuth");
 const ConnectionRequest = require("../models/ConnectionRequest");
 const User = require("../models/UserModel");
 
-const Safe_User_Data = "firstName lastName about skills age photoUrl";
+const Safe_User_Data = " _id firstName lastName about skills age photoUrl";
 
 userRouter.get("/user/request/received", isUserAuth, async (req, res) => {
   try {
-   
     const loggedUser = req.user;
     const findRequests = await ConnectionRequest
       .find({
@@ -20,7 +19,8 @@ userRouter.get("/user/request/received", isUserAuth, async (req, res) => {
     if (findRequests.length === 0) {
       return res.status(400).json({message:"No pending request found"})
     }
-    res.status(200).json({ message: "Requests retrieved successfully", data: findRequests });
+    console.log(findRequests)
+    res.status(200).json({ message: "Requests retrieved successfully",data:findRequests });
   } catch (err) {
     console.error(`Error fetching recived requests:`,err)
     res.status(500).json({message:"An error occurred while fetching requests" });
