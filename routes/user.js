@@ -1,7 +1,7 @@
 const express = require("express");
 const userRouter = express.Router();
 const isUserAuth = require("../middilewares/userAuth");
-const ConnectionRequest = require("../models/ConnectionRequest");
+const ConnectionRequest = require("../models/Connection");
 const User = require("../models/UserModel");
 
 const Safe_User_Data = " _id firstName lastName about skills age photoUrl";
