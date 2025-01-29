@@ -42,13 +42,25 @@ userRouter.get("/user/connections", isUserAuth, async (req, res) => {
       .populate("fromUser", Safe_User_Data)
       .populate("toUser", Safe_User_Data)
       .lean()
-
-    const data = connections.map((row) => {
-      if (row.fromUser._id.toString() === loggedUser._id.toString()) {
-        return row.toUser;
-      }
-      return row.fromUser;
-    });
+      const data = connections.map((row) => {
+        // Check if row.fromUser and loggedUser exist
+        if (!row.fromUser || !loggedUser) {
+          console.error('row.fromUser or loggedUser is null or undefined:', { row, loggedUser });
+          return null; // or handle this case appropriately
+        }
+      
+        // Ensure row.fromUser._id and loggedUser._id exist
+        if (row.fromUser._id.toString() === loggedUser._id.toString()) {
+          return row.toUser;
+        }
+        return row.fromUser;
+      }).filter(Boolean); // Filter out null values (if any)
+    // const data = connections.map((row) => {
+    //   if (row.fromUser._id.toString() === loggedUser._id.toString()) {
+    //     return row.toUser;
+    //   }
+    //   return row.fromUser;
+    // });
     res.status(200).json({message:"success",data:data})
   } catch (err) {
     console.error('Error fetching received requests:', err);
