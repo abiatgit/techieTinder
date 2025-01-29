@@ -9,9 +9,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 app.use(cors({
-  origin: "http://localhost:5173",  // Frontend origin
-  credentials: true,               // Allow cookies
-  
+  origin: "http://3.93.174.141", // Allow requests from your frontend IP
+  credentials: true,
 }));
 
 

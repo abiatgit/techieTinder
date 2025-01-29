@@ -57,6 +57,7 @@ userRouter.get("/user/connections", isUserAuth, async (req, res) => {
 });
 
 userRouter.get("/user/feed", isUserAuth, async (req, res) => {
+ 
   try {
     let page = parseInt(req.query.page) || 1;
     let limit = parseInt(req.query.limit) || 10;
